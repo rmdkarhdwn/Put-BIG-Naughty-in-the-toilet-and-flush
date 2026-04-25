@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import backgroundImg from '../assets/변기위에서.jpg'
 import bigNaughtyImg from '../assets/변기.webp'
 import closedToiletImg from '../assets/변기닫힌거.png'
@@ -8,12 +8,21 @@ import {
   DROP_HEIGHT,
   DROP_WIDTH,
   GAME_WIDTH,
+  TOILET_MAX_X,
+  TOILET_MIN_X,
   TOILET_HEIGHT,
   TOILET_WIDTH,
-  toiletX,
+  toiletBaseX,
   toiletY,
 } from '../game/constants'
 import { createItem, hasReachedGround, isInsideToilet } from '../game/items'
+
+function getNextToiletX(nextScore) {
+  if (nextScore < 3) return toiletBaseX
+
+  const range = TOILET_MAX_X - TOILET_MIN_X
+  return TOILET_MIN_X + Math.random() * range
+}
 
 function ToiletDropGame() {
   const [score, setScore] = useState(0)
@@ -22,6 +31,7 @@ function ToiletDropGame() {
   const [direction, setDirection] = useState(1)
   const [item, setItem] = useState(() => createItem(1))
   const [toiletOpen, setToiletOpen] = useState(false)
+  const [toiletX, setToiletX] = useState(toiletBaseX)
   const rafRef = useRef(null)
   const resetTimerRef = useRef(null)
   const speedRef = useRef(speed)
@@ -35,13 +45,14 @@ function ToiletDropGame() {
     directionRef.current = direction
   }, [direction])
 
-  const resetItem = () => {
+  const resetItem = useCallback((nextScore) => {
     setItem((prev) => createItem(prev.id + 1))
     const nextDirection = Math.random() < 0.5 ? -1 : 1
     directionRef.current = nextDirection
     setDirection(nextDirection)
     setToiletOpen(false)
-  }
+    setToiletX(getNextToiletX(nextScore))
+  }, [])
 
   const handleDrop = () => {
     if (gameOver || item.dropped || item.resolved) return
@@ -59,6 +70,7 @@ function ToiletDropGame() {
     setDirection(1)
     setGameOver(false)
     setToiletOpen(false)
+    setToiletX(toiletBaseX)
     setItem(createItem(Date.now()))
   }
 
@@ -94,17 +106,22 @@ function ToiletDropGame() {
 
         next.y += 8 + speedRef.current * 0.8
 
-        const enteredToilet = next.type === 'bigNaughty' && isInsideToilet(next)
+        const enteredToilet =
+          next.type === 'bigNaughty' && isInsideToilet(next, toiletX, toiletY)
         setToiletOpen(enteredToilet)
 
         if (hasReachedGround(next)) {
           next.resolved = true
-          const inToilet = isInsideToilet(next)
+          const inToilet = isInsideToilet(next, toiletX, toiletY)
           const bigNaughtyScored = next.type === 'bigNaughty' && inToilet
           const turtleScored = next.type === 'turtle' && !inToilet
 
           if (bigNaughtyScored || turtleScored) {
-            setScore((prevScore) => prevScore + 1)
+            let nextScore = 0
+            setScore((prevScore) => {
+              nextScore = prevScore + 1
+              return nextScore
+            })
             setSpeed((prevSpeed) => {
               const nextSpeed = Math.min(prevSpeed + 0.28, 10)
               speedRef.current = nextSpeed
@@ -113,7 +130,7 @@ function ToiletDropGame() {
             setToiletOpen(next.type === 'bigNaughty')
             if (resetTimerRef.current) clearTimeout(resetTimerRef.current)
             resetTimerRef.current = setTimeout(() => {
-              resetItem()
+              resetItem(nextScore)
               resetTimerRef.current = null
             }, 360)
           } else {
@@ -137,7 +154,7 @@ function ToiletDropGame() {
         resetTimerRef.current = null
       }
     }
-  }, [gameOver])
+  }, [gameOver, toiletX, resetItem])
 
   return (
     <main className="app-shell">

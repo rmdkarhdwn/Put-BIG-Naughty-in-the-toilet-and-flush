@@ -5,8 +5,6 @@ import {
   GAME_WIDTH,
   TOILET_HEIGHT,
   TOILET_WIDTH,
-  toiletX,
-  toiletY,
 } from './constants'
 
 export function createItem(id) {
@@ -20,7 +18,7 @@ export function createItem(id) {
   }
 }
 
-export function isInsideToilet(item) {
+export function isInsideToilet(item, toiletX, toiletY) {
   const centerX = item.x + DROP_WIDTH / 2
   const centerY = item.y + DROP_HEIGHT / 2
   const insetX = 16
