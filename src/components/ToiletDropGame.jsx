@@ -33,7 +33,7 @@ function ToiletDropGame() {
   }
 
   const handleDrop = () => {
-    if (gameOver || item.dropped) return
+    if (gameOver || item.dropped || item.resolved) return
     setItem((prev) => ({ ...prev, dropped: true }))
   }
 
@@ -59,6 +59,10 @@ function ToiletDropGame() {
       setItem((prev) => {
         const next = { ...prev }
 
+        if (next.resolved) {
+          return next
+        }
+
         if (!next.dropped) {
           next.x += direction * speed
 
@@ -82,6 +86,7 @@ function ToiletDropGame() {
         setToiletOpen(enteredToilet)
 
         if (hasReachedGround(next)) {
+          next.resolved = true
           const inToilet = isInsideToilet(next)
           const goodResult = next.type === 'good' && inToilet
           const turtleResult = next.type === 'turtle' && !inToilet

@@ -16,6 +16,7 @@ export function createItem(id) {
     x: Math.random() * (GAME_WIDTH - DROP_WIDTH),
     y: 34,
     dropped: false,
+    resolved: false,
   }
 }
 
