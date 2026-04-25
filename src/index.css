@@ -1,0 +1,42 @@
+:root {
+  font-family:
+    'Trebuchet MS', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #eaf4ff;
+  background: #09121c;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+p {
+  margin: 0;
+}
