@@ -17,12 +17,11 @@ import { createItem, hasReachedGround, isInsideToilet } from '../game/items'
 
 function ToiletDropGame() {
   const [score, setScore] = useState(0)
-  const [miss, setMiss] = useState(0)
+  const [, setMiss] = useState(0)
   const [gameOver, setGameOver] = useState(false)
   const [speed, setSpeed] = useState(2.6)
   const [direction, setDirection] = useState(1)
   const [item, setItem] = useState(() => createItem(1))
-  const [message, setMessage] = useState('클릭해서 떨어뜨리세요')
   const [toiletOpen, setToiletOpen] = useState(false)
   const rafRef = useRef(null)
   const resetTimerRef = useRef(null)
@@ -49,7 +48,6 @@ function ToiletDropGame() {
     setSpeed(2.6)
     setDirection(1)
     setGameOver(false)
-    setMessage('클릭해서 떨어뜨리세요')
     setToiletOpen(false)
     setItem(createItem(Date.now()))
   }
@@ -91,11 +89,6 @@ function ToiletDropGame() {
           if (goodResult || turtleResult) {
             setScore((prevScore) => prevScore + 1)
             setSpeed((prevSpeed) => Math.min(prevSpeed + 0.28, 10))
-            setMessage(
-              next.type === 'good'
-                ? '변기를 정확히 집어넣었습니다'
-                : '늑대거북이를 무사히 살렸습니다'
-            )
             setToiletOpen(next.type === 'good')
           } else {
             setMiss((prevMiss) => {
@@ -103,13 +96,6 @@ function ToiletDropGame() {
 
               if (nextMiss >= 3) {
                 setGameOver(true)
-                setMessage('게임 오버')
-              } else {
-                setMessage(
-                  next.type === 'good'
-                    ? '변기 이미지는 아래 변기 안으로 넣어야 합니다'
-                    : '늑대거북이는 변기 밖으로 보내야 합니다'
-                )
               }
 
               return nextMiss
@@ -164,10 +150,7 @@ function ToiletDropGame() {
               <span>점수</span>
               <strong>{score}</strong>
             </div>
-            <div className="badge">실수 {miss}/3</div>
           </div>
-
-          <div className="status-banner">현재 목표: {item.type === 'good' ? '변기 투하' : '늑대거북이 보호'}</div>
 
           <div
             className={`falling-item ${item.dropped ? 'is-dropped' : 'is-idle'} ${item.type}`}
@@ -199,20 +182,10 @@ function ToiletDropGame() {
             />
           </div>
 
-          <div className="message-bar">{message}</div>
-
-          <div className="rules-panel">
-            <p>배경은 `변기위에서.jpg`</p>
-            <p>투하용 이미지는 `변기.webp`</p>
-            <p>휴지는 아래 변기 안으로, 늑대거북이는 바깥으로</p>
-          </div>
-
           {gameOver ? (
             <div className="overlay">
               <div className="dialog">
-                <p className="dialog-label">Round End</p>
-                <h1>게임 오버</h1>
-                <p>최종 점수: {score}</p>
+                <p>{score}</p>
                 <button
                   type="button"
                   onClick={(event) => {

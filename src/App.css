@@ -34,17 +34,12 @@
   position: absolute;
   top: 14px;
   left: 14px;
-  right: 14px;
   z-index: 5;
   display: flex;
-  justify-content: space-between;
   gap: 12px;
 }
 
 .badge,
-.status-banner,
-.message-bar,
-.rules-panel,
 .dialog {
   background: rgba(31, 27, 22, 0.86);
   color: #f6eee0;
@@ -64,17 +59,6 @@
 .badge strong {
   font-size: 1.35rem;
   color: #fffaf1;
-}
-
-.status-banner {
-  position: absolute;
-  top: 32px;
-  left: 50%;
-  z-index: 5;
-  transform: translateX(-50%);
-  padding: 10px 18px;
-  text-align: center;
-  font-size: 0.96rem;
 }
 
 .falling-item,
@@ -120,33 +104,6 @@
   filter: drop-shadow(0 18px 28px rgba(255, 255, 255, 0.3));
 }
 
-.message-bar {
-  position: absolute;
-  bottom: 18px;
-  left: 50%;
-  z-index: 5;
-  transform: translateX(-50%);
-  max-width: calc(100% - 40px);
-  padding: 10px 16px;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.rules-panel {
-  position: absolute;
-  right: 18px;
-  bottom: 58px;
-  z-index: 5;
-  width: 280px;
-  padding: 14px 16px;
-  font-size: 0.9rem;
-  line-height: 1.45;
-}
-
-.rules-panel p + p {
-  margin-top: 6px;
-}
-
 .overlay {
   position: absolute;
   inset: 0;
@@ -162,22 +119,11 @@
   text-align: center;
 }
 
-.dialog-label {
-  margin-bottom: 8px;
-  color: #d8bf93;
-  font-size: 0.76rem;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-}
-
-.dialog h1 {
+.dialog p {
   margin: 0;
-  font-size: 2rem;
+  font-size: 3rem;
+  font-weight: 700;
   color: #fff7eb;
-}
-
-.dialog p + p {
-  margin-top: 8px;
 }
 
 .dialog button {
@@ -210,21 +156,6 @@
   .game-stage {
     border-width: 6px;
   }
-
-  .status-banner {
-    top: 60px;
-    max-width: calc(100% - 32px);
-  }
-
-  .rules-panel {
-    right: 12px;
-    bottom: 64px;
-    width: min(240px, calc(100% - 24px));
-  }
-
-  .message-bar {
-    white-space: normal;
-  }
 }
 
 @media (max-width: 640px) {
@@ -239,20 +170,5 @@
 
   .badge strong {
     font-size: 1.1rem;
-  }
-
-  .status-banner {
-    position: absolute;
-    left: 12px;
-    right: 12px;
-    transform: none;
-    top: 64px;
-  }
-
-  .rules-panel {
-    left: 12px;
-    right: 12px;
-    width: auto;
-    bottom: 72px;
   }
 }
