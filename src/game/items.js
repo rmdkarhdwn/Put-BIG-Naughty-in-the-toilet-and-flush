@@ -12,7 +12,7 @@ import {
 export function createItem(id) {
   return {
     id,
-    type: Math.random() < 0.7 ? 'good' : 'turtle',
+    type: Math.random() < 0.7 ? 'bigNaughty' : 'turtle',
     x: Math.random() * (GAME_WIDTH - DROP_WIDTH),
     y: 34,
     dropped: false,

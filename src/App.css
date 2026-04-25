@@ -81,7 +81,7 @@
   pointer-events: none;
 }
 
-.falling-item.good img {
+.falling-item.bigNaughty img {
   filter: drop-shadow(0 16px 18px rgba(0, 0, 0, 0.5));
 }
 

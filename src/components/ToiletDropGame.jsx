@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import backgroundImg from '../assets/변기위에서.jpg'
-import goodItemImg from '../assets/변기.webp'
+import bigNaughtyImg from '../assets/변기.webp'
 import closedToiletImg from '../assets/변기닫힌거.png'
 import openToiletImg from '../assets/변기열린거.png'
 import turtleImg from '../assets/늑대거북이.png'
@@ -17,7 +17,6 @@ import { createItem, hasReachedGround, isInsideToilet } from '../game/items'
 
 function ToiletDropGame() {
   const [score, setScore] = useState(0)
-  const [, setMiss] = useState(0)
   const [gameOver, setGameOver] = useState(false)
   const [speed, setSpeed] = useState(2.6)
   const [direction, setDirection] = useState(1)
@@ -56,7 +55,6 @@ function ToiletDropGame() {
     }
 
     setScore(0)
-    setMiss(0)
     setSpeed(2.6)
     setDirection(1)
     setGameOver(false)
@@ -96,41 +94,32 @@ function ToiletDropGame() {
 
         next.y += 8 + speedRef.current * 0.8
 
-        const enteredToilet = next.type === 'good' && isInsideToilet(next)
+        const enteredToilet = next.type === 'bigNaughty' && isInsideToilet(next)
         setToiletOpen(enteredToilet)
 
         if (hasReachedGround(next)) {
           next.resolved = true
           const inToilet = isInsideToilet(next)
-          const goodResult = next.type === 'good' && inToilet
-          const turtleResult = next.type === 'turtle' && !inToilet
+          const bigNaughtyScored = next.type === 'bigNaughty' && inToilet
+          const turtleScored = next.type === 'turtle' && !inToilet
 
-          if (goodResult || turtleResult) {
+          if (bigNaughtyScored || turtleScored) {
             setScore((prevScore) => prevScore + 1)
             setSpeed((prevSpeed) => {
               const nextSpeed = Math.min(prevSpeed + 0.28, 10)
               speedRef.current = nextSpeed
               return nextSpeed
             })
-            setToiletOpen(next.type === 'good')
+            setToiletOpen(next.type === 'bigNaughty')
+            if (resetTimerRef.current) clearTimeout(resetTimerRef.current)
+            resetTimerRef.current = setTimeout(() => {
+              resetItem()
+              resetTimerRef.current = null
+            }, 360)
           } else {
-            setMiss((prevMiss) => {
-              const nextMiss = prevMiss + 1
-
-              if (nextMiss >= 3) {
-                setGameOver(true)
-              }
-
-              return nextMiss
-            })
             setToiletOpen(false)
+            setGameOver(true)
           }
-
-          if (resetTimerRef.current) clearTimeout(resetTimerRef.current)
-          resetTimerRef.current = setTimeout(() => {
-            resetItem()
-            resetTimerRef.current = null
-          }, 360)
         }
 
         return next
@@ -185,8 +174,8 @@ function ToiletDropGame() {
             }}
           >
             <img
-              src={item.type === 'good' ? goodItemImg : turtleImg}
-              alt={item.type === 'good' ? '변기 이미지' : '늑대거북이'}
+              src={item.type === 'bigNaughty' ? bigNaughtyImg : turtleImg}
+              alt={item.type === 'bigNaughty' ? '빅나티 이미지' : '늑대거북이'}
             />
           </div>
 
