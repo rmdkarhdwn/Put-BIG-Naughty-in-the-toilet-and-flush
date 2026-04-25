@@ -25,10 +25,22 @@ function ToiletDropGame() {
   const [toiletOpen, setToiletOpen] = useState(false)
   const rafRef = useRef(null)
   const resetTimerRef = useRef(null)
+  const speedRef = useRef(speed)
+  const directionRef = useRef(direction)
+
+  useEffect(() => {
+    speedRef.current = speed
+  }, [speed])
+
+  useEffect(() => {
+    directionRef.current = direction
+  }, [direction])
 
   const resetItem = () => {
     setItem((prev) => createItem(prev.id + 1))
-    setDirection(Math.random() < 0.5 ? -1 : 1)
+    const nextDirection = Math.random() < 0.5 ? -1 : 1
+    directionRef.current = nextDirection
+    setDirection(nextDirection)
     setToiletOpen(false)
   }
 
@@ -64,15 +76,17 @@ function ToiletDropGame() {
         }
 
         if (!next.dropped) {
-          next.x += direction * speed
+          next.x += directionRef.current * speedRef.current
 
           if (next.x <= 0) {
             next.x = 0
+            directionRef.current = 1
             setDirection(1)
           }
 
           if (next.x >= GAME_WIDTH - DROP_WIDTH) {
             next.x = GAME_WIDTH - DROP_WIDTH
+            directionRef.current = -1
             setDirection(-1)
           }
 
@@ -80,7 +94,7 @@ function ToiletDropGame() {
           return next
         }
 
-        next.y += 8 + speed * 0.8
+        next.y += 8 + speedRef.current * 0.8
 
         const enteredToilet = next.type === 'good' && isInsideToilet(next)
         setToiletOpen(enteredToilet)
@@ -93,7 +107,11 @@ function ToiletDropGame() {
 
           if (goodResult || turtleResult) {
             setScore((prevScore) => prevScore + 1)
-            setSpeed((prevSpeed) => Math.min(prevSpeed + 0.28, 10))
+            setSpeed((prevSpeed) => {
+              const nextSpeed = Math.min(prevSpeed + 0.28, 10)
+              speedRef.current = nextSpeed
+              return nextSpeed
+            })
             setToiletOpen(next.type === 'good')
           } else {
             setMiss((prevMiss) => {
@@ -130,7 +148,7 @@ function ToiletDropGame() {
         resetTimerRef.current = null
       }
     }
-  }, [direction, gameOver, speed])
+  }, [gameOver])
 
   return (
     <main className="app-shell">
